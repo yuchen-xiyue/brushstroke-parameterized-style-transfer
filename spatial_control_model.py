@@ -315,7 +315,7 @@ class BrushstrokeOptimizer:
         self.loss_dict['style'] = guided_style_loss(self.vgg.extract_features(rendered_canvas_resized),
                                                  self.vgg.extract_features(style_img_resized),
                                                  layers=['conv1_1', 'conv2_1', 'conv3_1', 'conv4_1', 'conv5_1'],
-                                                 weights=[1, 1, 1, 1, 1], self.content_maps, self.style_maps)
+                                                 weights=[1, 1, 1, 1, 1], content_maps=self.content_maps, style_maps=self.style_maps)
         self.loss_dict['style'] *= self.style_weight
 
         self.loss_dict['curviture'] = ops.curviture_loss(self.curve_s, self.curve_e, self.curve_c)
