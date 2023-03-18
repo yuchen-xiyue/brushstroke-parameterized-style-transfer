@@ -431,7 +431,7 @@ class PixelOptimizer:
             'conv3_1': [cm.resize((self.canvas_width//8, self.canvas_height//8), refcheck=False) for cm in content_maps3_1], 
             'conv4_1': [cm.resize((self.canvas_width//16, self.canvas_height//16), refcheck=False) for cm in content_maps4_1], 
             'conv5_1': [cm.resize((self.canvas_width//32, self.canvas_height//32), refcheck=False) for cm in content_maps5_1]}
-
+ 
         style_maps = [style_map.resize((self.canvas_width, self.canvas_height)) for style_map in style_maps]
         style_maps = [np.array(style_map).astype(self.dtype) for style_map in style_maps]
         style_maps1_1 = [np.array(sm) for sm in style_maps]
