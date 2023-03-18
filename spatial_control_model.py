@@ -31,7 +31,7 @@ def get_guided_gram_matrices(features, maps):
     gram_matrices = []
     for i, feature in enumerate(features):
         Tl = np.stack(maps[i], axis=0)
-        Tl = Tl/tf.sum(tf.square(Tl))
+        Tl = Tl/np.sum(np.square(Tl))
         feature = tf.einsum('rhw,bhwf->rbhwf', Tl, feature)
         gram_matrix = tf.einsum('rbhwf,rbhwl->rbfl', feature, feature)
         R, B, H, W, C = feature.shape.as_list()
@@ -105,6 +105,8 @@ def stylize(content_img,
 
     pixel_optim = PixelOptimizer(canvas,
                                  style_img,
+                                 content_maps, 
+                                 style_maps, 
                                  resolution=pixel_resolution,
                                  num_steps=num_steps_pixel,
                                  content_weight=1.0,
@@ -374,6 +376,8 @@ class PixelOptimizer:
     def __init__(self,
                  canvas,                              # Canvas (PIL.Image).
                  style_img,                           # Style image (PIL.Image).
+                 content_maps, 
+                 style_maps, 
                  resolution          = 1024,          # Resolution of the canvas.
                  num_steps           = 2000,          # Number of optimization steps.
                  content_weight      = 1.0,           # Weight for the content loss.
@@ -411,6 +415,36 @@ class PixelOptimizer:
 
         canvas /= 255.0
         style_img /= 255.0
+
+        # Adding maps
+        content_maps = [content_map.resize((self.canvas_width, self.canvas_height)) for content_map in content_maps]
+        content_maps = [np.array(content_map).astype(self.dtype) for content_map in content_maps]
+        content_maps1_1 = [np.array(cm) for cm in content_maps]
+        content_maps2_1 = [np.array(cm) for cm in content_maps]
+        content_maps3_1 = [np.array(cm) for cm in content_maps]
+        content_maps4_1 = [np.array(cm) for cm in content_maps]
+        content_maps5_1 = [np.array(cm) for cm in content_maps]
+        self.content_maps = {
+            'conv1_1': content_maps1_1, 
+            'conv2_1': [cm.resize((self.canvas_width//2, self.canvas_height//2), refcheck=False) for cm in content_maps2_1], 
+            'conv3_1': [cm.resize((self.canvas_width//4, self.canvas_height//4), refcheck=False) for cm in content_maps3_1], 
+            'conv4_1': [cm.resize((self.canvas_width//8, self.canvas_height//8), refcheck=False) for cm in content_maps4_1], 
+            'conv5_1': [cm.resize((self.canvas_width//16, self.canvas_height//16), refcheck=False) for cm in content_maps5_1]}
+
+        style_maps = [style_map.resize((self.canvas_width, self.canvas_height)) for style_map in style_maps]
+        style_maps = [np.array(style_map).astype(self.dtype) for style_map in style_maps]
+        style_maps1_1 = [np.array(sm) for sm in style_maps]
+        style_maps2_1 = [np.array(sm) for sm in style_maps]
+        style_maps3_1 = [np.array(sm) for sm in style_maps]
+        style_maps4_1 = [np.array(sm) for sm in style_maps]
+        style_maps5_1 = [np.array(sm) for sm in style_maps]
+        self.style_maps = {
+            'conv1_1': style_maps1_1, 
+            'conv2_1': [sm.resize((self.canvas_width//2, self.canvas_height//2), refcheck=False) for sm in style_maps2_1], 
+            'conv3_1': [sm.resize((self.canvas_width//4, self.canvas_height//4), refcheck=False) for sm in style_maps3_1], 
+            'conv4_1': [sm.resize((self.canvas_width//8, self.canvas_height//8), refcheck=False) for sm in style_maps4_1], 
+            'conv5_1': [sm.resize((self.canvas_width//16, self.canvas_height//16), refcheck=False) for sm in style_maps5_1]}
+
 
         self.canvas_np = canvas
         self.content_img_np = canvas
@@ -472,10 +506,10 @@ class PixelOptimizer:
                                                      weights=[1, 1, 1, 1, 1])
         self.loss_dict['content'] *= self.content_weight
 
-        self.loss_dict['style'] = ops.style_loss(self.vgg.extract_features(rendered_canvas_resized),
+        self.loss_dict['style'] = guided_style_loss(self.vgg.extract_features(rendered_canvas_resized),
                                                  self.vgg.extract_features(style_img_resized),
                                                  layers=['conv1_1', 'conv2_1', 'conv3_1', 'conv4_1', 'conv5_1'],
-                                                 weights=[1, 1, 1, 1, 1])
+                                                 weights=[1, 1, 1, 1, 1], content_maps=self.content_maps, style_maps=self.style_maps)
         self.loss_dict['style'] *= self.style_weight
 
         self.loss_dict['tv'] = ((tf.nn.l2_loss(self.canvas[1:, :, :] - self.canvas[:-1, :, :]) / self.canvas.shape.as_list()[0]) +
