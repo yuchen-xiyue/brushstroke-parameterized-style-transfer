@@ -31,7 +31,7 @@ def get_guided_gram_matrices(features, maps):
     gram_matrices = []
     for i, feature in enumerate(features):
         Tl = np.stack(maps[i], axis=0)
-        print(Tl[0].shape)
+        # print(Tl[0].shape)
         Tl = tf.convert_to_tensor(Tl/np.sum(np.square(Tl), axis=0))
         feature = tf.einsum('rhw,bhwf->rbhwf', Tl, feature)
         gram_matrix = tf.einsum('rbhwf,rbhwl->rbfl', feature, feature)
