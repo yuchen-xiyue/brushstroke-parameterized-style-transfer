@@ -191,14 +191,14 @@ class BrushstrokeOptimizer:
         # content_maps = [np.array(content_map).astype(self.dtype) for content_map in content_maps]
         self.content_maps = {}
         for i in range(1, 6): 
-            for cm in content_maps: cm.resize((self.canvas_width//(2**(i+1)), self.canvas_height//(2**(i+1))))
+            content_maps = [cm.resize((self.canvas_width//(2**i), self.canvas_height//(2**i))) for cm in content_maps]
             self.content_maps['conv'+str(i)+'_1'] = [np.array(cm).astype(self.dtype) for cm in content_maps]
 
         style_maps = [style_map.resize((self.canvas_width, self.canvas_height)) for style_map in style_maps]
         # style_maps = [np.array(style_map).astype(self.dtype) for style_map in style_maps]
         self.style_maps = {}
         for i in range(1, 6): 
-            for sm in style_maps: sm.resize((self.canvas_width//(2**(i+1)), self.canvas_height//(2**(i+1))))
+            style_maps = [sm.resize((self.canvas_width//(2**i), self.canvas_height//(2**i))) for sm in style_maps]
             self.style_maps['conv'+str(i)+'_1'] = [np.array(sm).astype(self.dtype) for sm in style_maps]
 
         if draw_curve_position_path is not None and draw_curve_vector_path is not None:
@@ -403,20 +403,26 @@ class PixelOptimizer:
         canvas /= 255.0
         style_img /= 255.0
 
-        # Adding maps
+       # Adding maps
         content_maps = [content_map.resize((self.canvas_width, self.canvas_height)) for content_map in content_maps]
         # content_maps = [np.array(content_map).astype(self.dtype) for content_map in content_maps]
         self.content_maps = {}
         for i in range(1, 6): 
-            for cm in content_maps: cm.resize((self.canvas_width//(2**i), self.canvas_height//(2**i)))
+            content_maps = [cm.resize((self.canvas_width//(2**i), self.canvas_height//(2**i))) for cm in content_maps]
             self.content_maps['conv'+str(i)+'_1'] = [np.array(cm).astype(self.dtype) for cm in content_maps]
 
         style_maps = [style_map.resize((self.canvas_width, self.canvas_height)) for style_map in style_maps]
         # style_maps = [np.array(style_map).astype(self.dtype) for style_map in style_maps]
         self.style_maps = {}
         for i in range(1, 6): 
-            for sm in style_maps: sm.resize((self.canvas_width//(2**i), self.canvas_height//(2**i)))
+            style_maps = [sm.resize((self.canvas_width//(2**i), self.canvas_height//(2**i))) for sm in style_maps]
             self.style_maps['conv'+str(i)+'_1'] = [np.array(sm).astype(self.dtype) for sm in style_maps]
+
+        if draw_curve_position_path is not None and draw_curve_vector_path is not None:
+            self.draw_curve_position_np = np.load(draw_curve_position_path)
+            self.draw_curve_vector_np = np.load(draw_curve_vector_path)
+            self.draw_curve_position_np[..., 0] *= self.canvas_width
+            self.draw_curve_position_np[..., 1] *= self.canvas_height
 
         ckpt_path = utils.download_weights(url='https://www.dropbox.com/s/hv7b4eajrj7isyq/vgg_weights.pickle?dl=1',
                                            name='vgg_weights.pickle')
