@@ -86,6 +86,8 @@ def stylize(content_img,
 
     stroke_optim = BrushstrokeOptimizer(content_img,
                                         style_img,
+                                        content_maps, 
+                                        style_maps, 
                                         resolution=resolution,
                                         num_strokes=num_strokes,
                                         num_steps=num_steps,
