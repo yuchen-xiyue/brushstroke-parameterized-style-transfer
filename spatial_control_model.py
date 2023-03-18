@@ -207,10 +207,10 @@ class BrushstrokeOptimizer:
         style_maps5_1 = [np.array(sm) for sm in style_maps]
         self.style_maps = {
             'conv1_1': style_maps1_1, 
-            'conv2_1': [sm.resize((self.canvas_width/2, self.canvas_height/2), refcheck=False) for sm in style_maps2_1], 
-            'conv3_1': [sm.resize((self.canvas_width/4, self.canvas_height/4), refcheck=False) for sm in style_maps3_1], 
-            'conv4_1': [sm.resize((self.canvas_width/8, self.canvas_height/8), refcheck=False) for sm in style_maps4_1], 
-            'conv5_1': [sm.resize((self.canvas_width/16, self.canvas_height/16), refcheck=False) for sm in style_maps5_1]}
+            'conv2_1': [sm.resize((self.canvas_width//2, self.canvas_height//2), refcheck=False) for sm in style_maps2_1], 
+            'conv3_1': [sm.resize((self.canvas_width//4, self.canvas_height//4), refcheck=False) for sm in style_maps3_1], 
+            'conv4_1': [sm.resize((self.canvas_width//8, self.canvas_height//8), refcheck=False) for sm in style_maps4_1], 
+            'conv5_1': [sm.resize((self.canvas_width//16, self.canvas_height//16), refcheck=False) for sm in style_maps5_1]}
 
         if draw_curve_position_path is not None and draw_curve_vector_path is not None:
             self.draw_curve_position_np = np.load(draw_curve_position_path)
