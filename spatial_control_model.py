@@ -418,6 +418,9 @@ class PixelOptimizer:
             style_maps = [sm.resize((self.canvas_width//(2**i), self.canvas_height//(2**i))) for sm in style_maps]
             self.style_maps['conv'+str(i)+'_1'] = [np.array(sm).astype(self.dtype) for sm in style_maps]
 
+        self.canvas_np = canvas
+        self.content_img_np = canvas
+        self.style_img_np = style_img
 
         ckpt_path = utils.download_weights(url='https://www.dropbox.com/s/hv7b4eajrj7isyq/vgg_weights.pickle?dl=1',
                                            name='vgg_weights.pickle')
