@@ -189,10 +189,10 @@ class BrushstrokeOptimizer:
         content_maps = [content_map for content_map in content_maps]
         self.content_maps = {
             'conv1_1': content_maps, 
-            'conv2_1': [content_map.resize((self.canvas_width/2, self.canvas_height/2)) for content_map in content_maps], 
-            'conv3_1': [content_map.resize((self.canvas_width/4, self.canvas_height/4)) for content_map in content_maps], 
-            'conv4_1': [content_map.resize((self.canvas_width/8, self.canvas_height/8)) for content_map in content_maps], 
-            'conv5_1': [content_map.resize((self.canvas_width/16, self.canvas_height/16)) for content_map in content_maps]}
+            'conv2_1': [content_map.resize((self.canvas_width//2, self.canvas_height//2)) for content_map in content_maps], 
+            'conv3_1': [content_map.resize((self.canvas_width//4, self.canvas_height//4)) for content_map in content_maps], 
+            'conv4_1': [content_map.resize((self.canvas_width//8, self.canvas_height//8)) for content_map in content_maps], 
+            'conv5_1': [content_map.resize((self.canvas_width//16, self.canvas_height//16)) for content_map in content_maps]}
 
         style_maps = [style_map.resize((self.canvas_width, self.canvas_height)) for style_map in style_maps]
         style_maps = [np.array(style_map).astype(self.dtype) for style_map in style_maps]
