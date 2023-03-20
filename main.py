@@ -13,8 +13,8 @@ MAPS_PATH = path.join(IMGS_PATH, 'maps')
 CONT_PATH = path.join(IMGS_PATH, 'content')
 STYL_PATH = path.join(IMGS_PATH, 'style')
 
-cont_imgs = ['tree.jpg']#'elefant.jpg', 'cabin.jpg']##'church.jpg']#'golden_gate.jpg'] 
-styl_imgs = ['street.jpg']#'scream.jpg' , 'van_gogh_trees.jpg']##'van_gogh_starry_night.jpg']
+cont_imgs = ['olive_trees_greece.jpg']#'tree.jpg']#'elefant.jpg', 'cabin.jpg']##'church.jpg']#'golden_gate.jpg'] 
+styl_imgs = ['van_gogh_trees.jpg']#'street.jpg']#'scream.jpg' , 'van_gogh_trees.jpg']##'van_gogh_starry_night.jpg']
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-g', '--guided', action='store_true')
